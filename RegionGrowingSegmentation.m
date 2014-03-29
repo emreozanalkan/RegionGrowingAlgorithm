@@ -1,4 +1,4 @@
-function [ segmentedImage ] = RegionGrowingSegmentation( image, neighborhood )
+function [ segmentedImage ] = RegionGrowingSegmentation( image, neighborhoodType )
 %REGIONGROWINGSEGMENTATION Region Growing algorithm for segmenting an image
 %   partition of an image into a set of non-overlapped regions whose union is the entire image
 %
@@ -9,17 +9,17 @@ function [ segmentedImage ] = RegionGrowingSegmentation( image, neighborhood )
 
 % If neighborhood is not given, we set it to 8
 if nargin < 2
-    neighborhood = 8;
+    neighborhoodType = 8;
 end
 
 % Getting size of the image
-[rows cols channel] = size(image);
+[imageRowCount, imageColCount, imageChannelCount] = size(image);
 
 % Same size as image, we mark visited pixels
-visitedMatrix = zeros(rows, cols);
+visitedMatrix = zeros(imageRowCount, imageColCount);
 
 % Same size as image, we mark region labels
-regionMatrix = zeros(rows, cols);
+regionMatrix = zeros(imageRowCount, imageColCount);
 
 % Region Label Counter
 currentRegionLabel = 1;
@@ -27,7 +27,7 @@ currentRegionLabel = 1;
 imageGray = image;
 
 % If image is color image, we convert it to grayscale
-if channel > 1
+if imageChannelCount > 1
     imageGray = rgb2gray(image);
 end
 
@@ -45,44 +45,120 @@ maxPeaksSorted = sortrows(maxPeaks, -2);
 % We get value column, removing frequency column
 maxPeaksSorted = maxPeaksSorted(1);
 
-% mostFrequentPeakValue = maxPeaksSorted(1, 1);
-% 
-% display(maxPeaksSorted);
-% 
-% display(maxPeaksSorted(1, 1));
-% 
-% % We find our first seed by first index in grayscale
-% % image with the value of the histogram peak
-% [seedRow, seedCol] = find(imageGray == mostFrequentPeakValue, 1);
-
-
 % Loop while there is no unlabeled region in region matrix
 while(~isempty(find(regionMatrix == 0)))
 
 % Getting unlabled seed in image
 [seedRow, seedCol] = FindSeed(imageGray, regionMatrix, maxPeaksSorted);
+
+% If no seed found
+if seedRow == -1 || seedCol == -1
     
+    [I, J] = find(regionMatrix == 0);
+    
+    %error('We need to handle this part');
+    segmentedImage = 0;
+    display(regionMatrix);
+    imagesc(regionMatrix);
+    return;
+end
+
+% Region keeping t
+currentRegion = 0;
+
+if imageChannelCount > 1
+    currentRegion = [ image(seedRow, seedCol, 1)
+                      image(seedRow, seedCol, 2)
+                      image(seedRow, seedCol, 3) ]; 
+else
+    currentRegion = [ image(seedRow, seedCol) ];
+end
+
+% Marking seed point as visited
+visitedMatrix(seedRow, seedCol) = 1;
+
+% Marking seed with current region label
+regionMatrix(seedRow, seedCol) = currentRegionLabel;
+
+% Initial Threshold for adding neighbors to region
+threshold = mean(std(double(image)));
+if imageChannelCount > 1
+    threshold = [threshold(:, :, 1); threshold(:, :, 2); threshold(:, :, 3)];
+end
+
+% Using Java.Util's ArrayDeque data structure for queue
+import java.util.ArrayDeque
+neighborList = ArrayDeque();
+addedNeighborList = ArrayDeque();
+
+% We first adding neighbors 
+AddNeighbors(imageRowCount, imageColCount, seedRow, seedCol, neighborhoodType, neighborList, visitedMatrix);
+
+while ~neighborList.isEmpty()
+    
+    %neighborListTemp = neighborList.clone();
+    
+    while ~neighborList.isEmpty()
+        
+        neighborData = neighborList.pop();
+        
+        neighborRow = neighborData(1);
+        neighborCol = neighborData(2);
+        
+        if imageChannelCount > 1
+            currentPixel = [ image(neighborRow, neighborCol, 1)
+                             image(neighborRow, neighborCol, 2)
+                             image(neighborRow, neighborCol, 3) ]; 
+        else
+            currentPixel = [ image(neighborRow, neighborCol) ];
+        end
+        
+        if visitedMatrix(neighborRow, neighborCol) == 1
+            continue;
+        else
+            visitedMatrix(neighborRow, neighborCol) = 1;
+        end
+        
+        regionMean = mean(currentRegion);
+        
+        diff = abs( double(currentPixel) - double(regionMean) );
+        
+        if diff <= threshold
+            
+            currentRegion = [currentRegion; currentPixel];
+            
+            regionMatrix(neighborRow, neighborCol) = currentRegionLabel;
+            
+            addedNeighborList.add([neighborRow, neighborCol]);
+            
+        end
+        
+    end
+    
+    while ~addedNeighborList.isEmpty()
+        
+        addedNeighborData = addedNeighborList.pop();
+        
+        AddNeighbors(imageRowCount, imageColCount, addedNeighborData(1), addedNeighborData(2), neighborhoodType, neighborList, visitedMatrix);
+        
+    end
+    
+    if imageChannelCount > 1
+        threshold = 3 * std(mean(currentRegion));
+    else
+        threshold = 3 * std(currentRegion);
+    end
     
 end
 
 
+currentRegionLabel = currentRegionLabel + 1;
+
+end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-segmentedImage = 0;
+display(regionMatrix);
+imagesc(regionMatrix, []);
 
 end
 
