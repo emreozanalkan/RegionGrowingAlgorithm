@@ -37,13 +37,13 @@ end
 [counts, x] = imhist(imageGray);
 
 % We find peak points of histogram with threshold 100
-[maxPeaks, ~] = peakdet(counts, 100, x);
+[maxPeaks, ~] = peakdet(counts, 50, x);
 
 % Peaks are sorted according to most frequent ones in descending order
 maxPeaksSorted = sortrows(maxPeaks, -2);
 
 % We get value column, removing frequency column
-maxPeaksSorted = maxPeaksSorted(1);
+maxPeaksSorted = maxPeaksSorted(:, 1);
 
 % Loop while there is no unlabeled region in region matrix
 while(~isempty(find(regionMatrix == 0)))
@@ -67,9 +67,7 @@ end
 currentRegion = 0;
 
 if imageChannelCount > 1
-    currentRegion = [ image(seedRow, seedCol, 1)
-                      image(seedRow, seedCol, 2)
-                      image(seedRow, seedCol, 3) ]; 
+    currentRegion = [ image(seedRow, seedCol, 1), image(seedRow, seedCol, 2), image(seedRow, seedCol, 3) ]; 
 else
     currentRegion = [ image(seedRow, seedCol) ];
 end
@@ -83,7 +81,7 @@ regionMatrix(seedRow, seedCol) = currentRegionLabel;
 % Initial Threshold for adding neighbors to region
 threshold = mean(std(double(image)));
 if imageChannelCount > 1
-    threshold = [threshold(:, :, 1); threshold(:, :, 2); threshold(:, :, 3)];
+    threshold = [threshold(:, :, 1), threshold(:, :, 2), threshold(:, :, 3)];
 end
 
 % Using Java.Util's ArrayDeque data structure for queue
@@ -106,9 +104,7 @@ while ~neighborList.isEmpty()
         neighborCol = neighborData(2);
         
         if imageChannelCount > 1
-            currentPixel = [ image(neighborRow, neighborCol, 1)
-                             image(neighborRow, neighborCol, 2)
-                             image(neighborRow, neighborCol, 3) ]; 
+            currentPixel = [ image(neighborRow, neighborCol, 1), image(neighborRow, neighborCol, 2), image(neighborRow, neighborCol, 3) ]; 
         else
             currentPixel = [ image(neighborRow, neighborCol) ];
         end

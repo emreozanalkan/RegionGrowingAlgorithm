@@ -1,12 +1,12 @@
 close all; clear all; clc;
 
-planeImage = imread('Resources/images/3096.jpg');
+image = imread('Resources/images/3096.jpg');
 
 % neighborhoodType = 4; % 4-point connectivity
-neighborhoodType = 8; % 8-point connectivty
+neighborhoodType = 4; % 8-point connectivty
 
 
 tic;
-segmentedImage = RegionGrowingSegmentation(planeImage, neighborhoodType);
+segmentedImage = RegionGrowingSegmentation(image, neighborhoodType);
 display('Segmentation time:');
 toc;
