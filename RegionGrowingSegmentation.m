@@ -12,6 +12,8 @@ if nargin < 2
     neighborhoodType = 8;
 end
 
+% image = double(image);
+
 % Getting size of the image
 [imageRowCount, imageColCount, imageChannelCount] = size(image);
 
@@ -155,9 +157,9 @@ while ~neighborList.isEmpty()
     end
     
     if imageChannelCount > 1
-        threshold = 8 * std(mean(currentRegion));
+        threshold = 10 * std(mean(double(currentRegion)));
     else
-        threshold = 8 * std(currentRegion);
+        threshold = 10 * std(currentRegion);
     end
     
 end
@@ -167,9 +169,12 @@ currentRegionLabel = currentRegionLabel + 1;
 
 end
 
-segmentedImage = 0;
-display(regionMatrix);
-imagesc(regionMatrix);
+segmentedImage = ColorSegments(regionMatrix);
+
+imshow(segmentedImage);
+
+% display(regionMatrix);
+% imagesc(regionMatrix);
 
 end
 

@@ -1,7 +1,7 @@
 close all; clear all; clc;
 
  image = imread('Resources/images/3096.jpg');
-% image = imread('Resources/images/28075.jpg');
+ %image = imread('Resources/images/28075.jpg');
 % image = imread('Resources/images/113016.jpg');
 
 % neighborhoodType = 4; % 4-point connectivity
