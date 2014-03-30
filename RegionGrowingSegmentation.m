@@ -1,4 +1,4 @@
-function [ segmentedImage ] = RegionGrowingSegmentation( image, neighborhoodType )
+function [ segmentedImage, binaryImage, regionMatrix ] = RegionGrowingSegmentation( image, neighborhoodType )
 %REGIONGROWINGSEGMENTATION Region Growing algorithm for segmenting an image
 %   partition of an image into a set of non-overlapped regions whose union is the entire image
 %
@@ -46,6 +46,10 @@ maxPeaksSorted = sortrows(maxPeaks, -2);
 
 % We get value column, removing frequency column
 maxPeaksSorted = maxPeaksSorted(:, 1);
+
+peakCount = numel(maxPeaksSorted);
+display('peak count:');
+display(peakCount);
 
 % Loop while there is no unlabeled region in region matrix
 while(~isempty(find(regionMatrix == 0)))
@@ -157,9 +161,9 @@ while ~neighborList.isEmpty()
     end
     
     if imageChannelCount > 1
-        threshold = 10 * std(mean(double(currentRegion)));
+        threshold = 8 * std(mean(double(currentRegion)));
     else
-        threshold = 10 * std(currentRegion);
+        threshold = 8 * std(double(currentRegion));
     end
     
 end
