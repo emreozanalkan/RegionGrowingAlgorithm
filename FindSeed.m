@@ -2,6 +2,8 @@ function [ seedRow, seedCol ] = FindSeed( imageGray, regionMatrix, peaks )
 %GETSEED Find seed point for segmentation
 %   Pick seed according to histogram peaks and unlabeled regions
 
+[seedRow, seedCol] = find(regionMatrix == 0, 1);
+return;
 
 % Loop through all peaks of histogram
 for ii = 1 : numel(peaks)

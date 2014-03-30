@@ -155,9 +155,9 @@ while ~neighborList.isEmpty()
     end
     
     if imageChannelCount > 1
-        threshold = 2 * std(mean(currentRegion));
+        threshold = 8 * std(mean(currentRegion));
     else
-        threshold = 2 * std(currentRegion);
+        threshold = 8 * std(currentRegion);
     end
     
 end
