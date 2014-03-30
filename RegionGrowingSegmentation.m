@@ -37,7 +37,7 @@ end
 [counts, x] = imhist(imageGray);
 
 % We find peak points of histogram with threshold 100
-[maxPeaks, ~] = peakdet(counts, 50, x);
+[maxPeaks, ~] = peakdet(counts, 100, x);
 
 % Peaks are sorted according to most frequent ones in descending order
 maxPeaksSorted = sortrows(maxPeaks, -2);
@@ -54,13 +54,28 @@ while(~isempty(find(regionMatrix == 0)))
 % If no seed found
 if seedRow == -1 || seedCol == -1
     
-    [I, J] = find(regionMatrix == 0);
+%     tic;
+%     display('CheckFixUnlabeledRegions');
+%     regionMatrix = CheckFixUnlabeledRegions(regionMatrix);
+%     toc;
     
-    %error('We need to handle this part');
-    segmentedImage = 0;
-    display(regionMatrix);
-    imagesc(regionMatrix);
-    return;
+    [seedRow, seedCol] = FindSeedFromUnlabeled(regionMatrix);
+    
+    if isempty(seedRow) || isempty(seedCol)
+        break;
+%         segmentedImage = 0;
+%         display(regionMatrix);
+%         imagesc(regionMatrix);
+%         return;
+    end
+    
+%     [I, J] = find(regionMatrix == 0);
+%     
+%     %error('We need to handle this part');
+%     segmentedImage = 0;
+%     display(regionMatrix);
+%     imagesc(regionMatrix);
+%     return;
 end
 
 % Region keeping t
@@ -140,9 +155,9 @@ while ~neighborList.isEmpty()
     end
     
     if imageChannelCount > 1
-        threshold = 3 * std(mean(currentRegion));
+        threshold = 2 * std(mean(currentRegion));
     else
-        threshold = 3 * std(currentRegion);
+        threshold = 2 * std(currentRegion);
     end
     
 end
@@ -152,9 +167,9 @@ currentRegionLabel = currentRegionLabel + 1;
 
 end
 
-
+segmentedImage = 0;
 display(regionMatrix);
-imagesc(regionMatrix, []);
+imagesc(regionMatrix);
 
 end
 

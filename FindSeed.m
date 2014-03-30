@@ -23,9 +23,24 @@ for ii = 1 : numel(peaks)
     
 end
 
-% If we don't find any seed to start, setting them to -1
 seedRow = -1;
 seedCol = -1;
+% 
+% [zeroRows, zeroCols] = find(regionMatrix == 0);
+% 
+% for ii = 1 : numel(zeroRows)
+%     
+% end
+% 
+% 
+% % If we can't find any peak seeds, we look for remaining zeros
+% [seedRow seedCol] = find(regionMatrix == 0, 1);
+% 
+% if isempty(seedRow) || isempty(seedCol)
+%    % If we don't find any seed to start, setting them to -1
+%     seedRow = -1;
+%     seedCol = -1; 
+% end
 
 end
 
