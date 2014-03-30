@@ -173,6 +173,24 @@ end
 
 [ segmentedImage, binaryImage ] = ColorSegments(regionMatrix);
 
+segmentedImage(:, :, 1) = medfilt2(segmentedImage(:, :, 1), [5 5]);
+
+segmentedImage(:, :, 2) = medfilt2(segmentedImage(:, :, 2), [5 5]);
+
+segmentedImage(:, :, 3) = medfilt2(segmentedImage(:, :, 3), [5 5]);
+
+se = strel('disk', 3);
+
+segmentedImage(:, :, 1) = imclose(segmentedImage(:, :, 1), se);
+segmentedImage(:, :, 2) = imclose(segmentedImage(:, :, 2), se);
+segmentedImage(:, :, 3) = imclose(segmentedImage(:, :, 3), se);
+
+segmentedImage(:, :, 1) = imopen(segmentedImage(:, :, 1), se);
+segmentedImage(:, :, 2) = imopen(segmentedImage(:, :, 2), se);
+segmentedImage(:, :, 3) = imopen(segmentedImage(:, :, 3), se);
+
+binaryImage = medfilt2(binaryImage);
+
 subplot(1, 3, 1);
 imshow(image);
 subplot(1, 3, 2);
