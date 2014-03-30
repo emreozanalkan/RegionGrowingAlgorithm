@@ -52,7 +52,7 @@ display('peak count:');
 display(peakCount);
 
 % Loop while there is no unlabeled region in region matrix
-while(~isempty(find(regionMatrix == 0)))
+while(~isempty(find(regionMatrix == 0, 1)))
 
 % Getting unlabled seed in image
 [seedRow, seedCol] = FindSeed(imageGray, regionMatrix, maxPeaksSorted);

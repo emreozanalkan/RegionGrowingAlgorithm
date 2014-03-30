@@ -5,29 +5,29 @@ function [ seedRow, seedCol ] = FindSeed( imageGray, regionMatrix, peaks )
 [seedRow, seedCol] = find(regionMatrix == 0, 1);
 return;
 
-% Loop through all peaks of histogram
-for ii = 1 : numel(peaks)
-    
-    % Find rows and cols of the pixels has peak value
-    [seedRows, seedCols] = find(imageGray == peaks(ii));
-    
-    % Loop thourgh all indexes to find seed not in any region
-    for ii = 1 : numel(seedRows)
-        
-        % If ii. th seed is not in any region, pick it as seed
-        if regionMatrix(seedRows(ii), seedCols(ii)) == 0
-            seedRow = seedRows(ii);
-            seedCol= seedCols(ii);
-            return;
-        end
-        
-    end
-    
-end
-
-seedRow = -1;
-seedCol = -1;
+% % Loop through all peaks of histogram
+% for ii = 1 : numel(peaks)
+%     
+%     % Find rows and cols of the pixels has peak value
+%     [seedRows, seedCols] = find(imageGray == peaks(ii));
+%     
+%     % Loop thourgh all indexes to find seed not in any region
+%     for ii = 1 : numel(seedRows)
+%         
+%         % If ii. th seed is not in any region, pick it as seed
+%         if regionMatrix(seedRows(ii), seedCols(ii)) == 0
+%             seedRow = seedRows(ii);
+%             seedCol= seedCols(ii);
+%             return;
+%         end
+%         
+%     end
+%     
+% end
 % 
+% seedRow = -1;
+% seedCol = -1;
+% % 
 % [zeroRows, zeroCols] = find(regionMatrix == 0);
 % 
 % for ii = 1 : numel(zeroRows)
