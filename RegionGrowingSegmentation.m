@@ -165,13 +165,20 @@ while ~neighborList.isEmpty()
 end
 
 
-currentRegionLabel = currentRegionLabel + 1;
+currentRegionLabel = currentRegionLabel + 10;
 
 end
 
-segmentedImage = ColorSegments(regionMatrix);
+% medfilt2(regionMatrix, [5 5]);
 
+[ segmentedImage, binaryImage ] = ColorSegments(regionMatrix);
+
+subplot(1, 3, 1);
+imshow(image);
+subplot(1, 3, 2);
 imshow(segmentedImage);
+subplot(1, 3, 3);
+imshow(binaryImage);
 
 % display(regionMatrix);
 % imagesc(regionMatrix);

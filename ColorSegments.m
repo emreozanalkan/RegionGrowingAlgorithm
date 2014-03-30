@@ -1,4 +1,4 @@
-function [ segmentedImage ] = ColorSegments( regionMatrix )
+function [ segmentedImage, binaryImage ] = ColorSegments( regionMatrix )
 %COLORSEGMENTS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -18,9 +18,13 @@ for ii = 1 : uniqueRegionLabelCount
     labelColors = [labelColors; rValue gValue bValue];
 end
 
+frequentLabel = mode(mode(regionMatrix));
+
 [rows, cols] = size(regionMatrix);
 
 segmentedImage = uint8(zeros(rows, cols, 3));
+
+binaryImage = uint8(zeros(rows, cols, 1));
 
 for ii = 1 : rows
     
@@ -35,6 +39,12 @@ for ii = 1 : rows
         segmentedImage(ii, jj, 2) = labelColors(colorIndex, 2);
         
         segmentedImage(ii, jj, 3) = labelColors(colorIndex, 3);
+        
+        if regionLabel == frequentLabel
+            binaryImage(ii, jj) = 0;
+        else
+            binaryImage(ii, jj) = 255;
+        end
         
     end
     
