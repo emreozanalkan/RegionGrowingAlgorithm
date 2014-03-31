@@ -1,6 +1,6 @@
 function [ sensitivity, specificity ] = SegmentationEvaluation( image, groundTruth, objectColor, backgroundColor )
 %SEGMENTATIONEVALUATION Summary of this function goes here
-%   Detailed explanation goes here
+%   https://en.wikipedia.org/wiki/Sensitivity_and_specificity
 
 if size(image) ~= size(groundTruth)
     error('Images are not same size.');
